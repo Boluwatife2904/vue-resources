@@ -12,13 +12,17 @@
 </template>
 
 <script>
+import { inject } from "vue";
 import SingleResource from "./SingleResource";
 
 export default {
   components: {
     SingleResource
   },
-  inject: ["resources"]
+  setup() {
+    const resources = inject("resources");
+    return { resources };
+  }
 };
 </script>
 
@@ -26,8 +30,5 @@ export default {
 ul {
   list-style: none;
   padding: 0;
-  margin: 0 auto;
-  max-width: 40rem;
-  width: 100%;
 }
 </style>

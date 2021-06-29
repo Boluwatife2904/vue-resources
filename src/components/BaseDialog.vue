@@ -1,6 +1,6 @@
 <template>
   <teleport to="body">
-    <div @click="closeDialog"></div>
+    <div @click="$emit('close')"></div>
     <dialog open>
       <header>
         <slot name="header">
@@ -19,17 +19,14 @@
 
 <script>
 export default {
+  name: "BaseDialog",
   props: {
     title: {
       type: String,
       required: false
     }
   },
-  methods: {
-    closeDialog() {
-      this.$emit("close");
-    }
-  }
+  emits: ["close"]
 };
 </script>
 

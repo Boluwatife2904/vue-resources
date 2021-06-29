@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { ref, computed, provide } from "vue";
 import StoredResources from "./StoredResources.vue";
 import AddResource from "./AddResource.vue";
 import BaseButton from "./BaseButton";
@@ -25,60 +26,71 @@ export default {
     BaseButton,
     BaseCard
   },
-  data() {
-    return {
-      selectedTab: "stored-resources",
-      storedResources: [
-        {
-          id: "official-guide",
-          title: "Official Guide",
-          description: "The official Vue.js documentation",
-          link: "https://vuejs.org"
-        },
-        {
-          id: "google",
-          title: "Google",
-          description: "Your Favorite Search Engine",
-          link: "https://google.com"
-        }
-      ]
+  setup() {
+    // Data
+    const selectedTab = ref("stored-resources");
+    const storedResources = ref([
+      {
+        id: "official-guide",
+        title: "Official Guide",
+        description: "The official Vue.js documentation",
+        link: "https://vuejs.org"
+      },
+      {
+        id: "google",
+        title: "Google",
+        description: "Your Favorite Search Engine",
+        link: "https://google.com"
+      }
+    ]);
+
+    // Methods
+    const switchTab = tab => {
+      selectedTab.value = tab;
     };
-  },
-  provide() {
-    return {
-      resources: this.storedResources,
-      saveResource: this.saveResource,
-      removeResource: this.removeResource
-    };
-  },
-  computed: {
-    storedResourcesButton() {
-      return this.selectedTab === "stored-resources" ? null : "flat";
-    },
-    addResourceButton() {
-      return this.selectedTab === "add-resource" ? null : "flat";
-    }
-  },
-  methods: {
-    switchTab(tab) {
-      this.selectedTab = tab;
-    },
-    saveResource(title, description, link) {
+
+    const saveResource = (title, description, link) => {
       const newResource = {
         id: new Date().toUTCString(),
         title: title,
         description: description,
         link: link
       };
-      this.storedResources.unshift(newResource);
-      this.selectedTab = "stored-resources";
-    },
-    removeResource(resourceId) {
-      const indexValue = this.storedResources.findIndex(
+
+      storedResources.value.unshift(newResource);
+      selectedTab.value = "stored-resources";
+    };
+
+    const removeResource = resourceId => {
+      const indexValue = storedResources.value.findIndex(
         resource => resource.id === resourceId
       );
-      this.storedResources.splice(indexValue, 1);
-    }
+      storedResources.value.splice(indexValue, 1);
+    };
+
+    // Computed Properties
+    const storedResourcesButton = computed(() => {
+      return selectedTab.value === "stored-resources" ? null : "flat";
+    });
+
+    const addResourceButton = computed(() => {
+      return selectedTab.value === "add-resource" ? null : "flat";
+    });
+
+    // Provide
+    provide("resources", storedResources);
+    provide("saveResource", saveResource);
+    provide("removeResource", removeResource);
+
+    return {
+      selectedTab,
+      storedResources,
+      storedResourcesButton,
+      addResourceButton,
+      removeResource,
+      saveResource,
+      switchTab
+    };
   }
 };
 </script>

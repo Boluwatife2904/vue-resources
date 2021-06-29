@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { ref, inject } from "vue";
 import BaseButton from "./BaseButton.vue";
 import BaseCard from "./BaseCard.vue";
 import BaseDialog from "./BaseDialog.vue";
@@ -50,33 +51,40 @@ export default {
     BaseButton,
     BaseDialog
   },
-  data() {
-    return {
-      title: "",
-      description: "",
-      link: "",
-      invalidInput: false
-    };
-  },
-  inject: ["saveResource"],
-  methods: {
-    submitResource() {
+  setup() {
+    const title = ref("");
+    const description = ref("");
+    const link = ref("");
+    const invalidInput = ref(false);
+    const saveResource = inject("saveResource");
+
+    const submitResource = () => {
       if (
-        this.title.trim() === "" ||
-        this.description.trim() === "" ||
-        this.link.trim() === ""
+        title.value.trim() === "" ||
+        description.value.trim() === "" ||
+        link.value.trim() === ""
       ) {
-        this.invalidInput = true;
+        invalidInput.value = true;
       } else {
-        this.saveResource(this.title, this.description, this.link);
+        saveResource(title.value, description.value, link.value);
       }
-      this.title = "";
-      this.description = "";
-      this.link = "";
-    },
-    closeDialog() {
-      this.invalidInput = false;
-    }
+      title.value = "";
+      description.value = "";
+      link.value = "";
+    };
+
+    const closeDialog = () => {
+      invalidInput.value = false;
+    };
+
+    return {
+      title,
+      description,
+      link,
+      invalidInput,
+      submitResource,
+      closeDialog
+    };
   }
 };
 </script>

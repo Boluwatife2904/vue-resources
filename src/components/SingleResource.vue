@@ -14,19 +14,18 @@
 </template>
 
 <script>
+import { inject } from "vue";
 import BaseCard from "./BaseCard";
 import BaseButton from "./BaseButton";
 
 export default {
   name: "SingleResource",
-  inject: ["removeResource"],
   components: {
     BaseCard,
     BaseButton
   },
   props: {
     id: {
-      type: Number,
       required: true
     },
     title: {
@@ -41,11 +40,14 @@ export default {
       type: String,
       required: true
     }
+  },
+  setup() {
+    const removeResource = inject("removeResource");
+    return { removeResource };
   }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 header {
   display: flex;
